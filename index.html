@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baustoffkunde – Lern-App</title>
+<style>
+  :root{
+    --bg:#f4f6f8; --surface:#ffffff; --surface-2:#eef1f5; --border:#dde3ea;
+    --text:#1c2430; --muted:#65727f; --accent:#3d6fb4; --accent-2:#2b568f;
+    --holz:#3f9a5c; --stahl:#4a7bb5; --grund:#b5793f;
+    --good:#2f9e5f; --bad:#d1495b; --warn:#e0a13a;
+    --shadow:0 6px 22px rgba(30,45,70,.10); --shadow-sm:0 2px 8px rgba(30,45,70,.07);
+    --radius:16px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12161c; --surface:#1c232c; --surface-2:#232c36; --border:#313c48;
+      --text:#e8edf3; --muted:#9aa7b4; --accent:#5b8dd6; --accent-2:#7aa7e6;
+      --shadow:0 6px 24px rgba(0,0,0,.35); --shadow-sm:0 2px 10px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.55;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:20px 16px 64px}
+
+  /* Header */
+  header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap}
+  .brand{display:flex; align-items:center; gap:12px}
+  .logo{width:44px;height:44px;border-radius:12px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--holz),var(--stahl));
+    display:flex;align-items:center;justify-content:center;font-size:22px}
+  .brand h1{font-size:1.28rem;line-height:1.15;font-weight:750}
+  .brand p{font-size:.82rem;color:var(--muted)}
+  .reset-btn{background:none;border:1px solid var(--border);color:var(--muted);
+    padding:7px 12px;border-radius:10px;cursor:pointer;font-size:.8rem}
+  .reset-btn:hover{background:var(--surface-2);color:var(--text)}
+
+  /* Mode tabs */
+  .modes{display:flex;gap:8px;background:var(--surface);padding:6px;border-radius:14px;
+    box-shadow:var(--shadow-sm);border:1px solid var(--border);margin-bottom:18px}
+  .modes button{flex:1;border:none;background:none;color:var(--muted);font-weight:650;
+    font-size:.95rem;padding:11px;border-radius:10px;cursor:pointer;transition:.15s}
+  .modes button.active{background:var(--accent);color:#fff;box-shadow:var(--shadow-sm)}
+
+  /* Fach-Reiter */
+  .faecher{display:flex;gap:10px;margin-bottom:14px}
+  .faecher button{flex:1;border:1px solid var(--border);background:var(--surface);color:var(--muted);
+    font-weight:750;font-size:1.02rem;padding:13px 10px;border-radius:14px;cursor:pointer;transition:.15s;
+    display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow-sm)}
+  .faecher button:hover{color:var(--text)}
+  .faecher button.active{color:#fff;border-color:transparent}
+  .faecher button[data-fach="Baustoffkunde"].active{background:linear-gradient(135deg,#3f9a5c,#4a7bb5)}
+  .faecher button[data-fach="Bauphysik"].active{background:linear-gradient(135deg,#d98a3d,#3d96a8)}
+
+  /* Topic chips */
+  .section-label{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);margin:16px 2px 9px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--border);background:var(--surface);color:var(--text);
+    padding:7px 13px;border-radius:999px;font-size:.84rem;cursor:pointer;transition:.15s;
+    display:flex;align-items:center;gap:7px}
+  .chip:hover{border-color:var(--accent)}
+  .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .chip .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .chip .cnt{font-size:.72rem;opacity:.7}
+  .chip.on .cnt{opacity:.85}
+
+  .start-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+  .btn{border:none;border-radius:12px;padding:13px 22px;font-size:.98rem;font-weight:700;
+    cursor:pointer;transition:.15s;box-shadow:var(--shadow-sm)}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-2)}
+  .btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+  .btn-ghost:hover{background:var(--surface-2)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+
+  /* Card panel */
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:22px;margin-top:8px}
+
+  .progress-head{display:flex;justify-content:space-between;align-items:center;gap:10px;
+    margin-bottom:14px;font-size:.85rem;color:var(--muted);flex-wrap:wrap}
+  .bar{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-bottom:20px}
+  .bar > span{display:block;height:100%;background:linear-gradient(90deg,var(--holz),var(--stahl));
+    width:0;transition:width .3s}
+
+  /* Flashcard */
+  .flash{perspective:1600px;margin-bottom:18px}
+  .flash-inner{position:relative;width:100%;min-height:300px;transition:transform .5s;
+    transform-style:preserve-3d;cursor:pointer}
+  .flash.flipped .flash-inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;
+    padding:30px 26px;display:flex;flex-direction:column;justify-content:center;
+    border:1px solid var(--border)}
+  .face-front{background:var(--surface-2)}
+  .face-back{background:linear-gradient(160deg,var(--surface),var(--surface-2));transform:rotateY(180deg)}
+  .face .kicker{font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .face .kicker .dot{width:10px;height:10px;border-radius:50%}
+  .face .q{font-size:1.24rem;font-weight:700;line-height:1.4}
+  .face .a{font-size:1.04rem;line-height:1.6}
+  .face .a b{color:var(--accent-2)}
+  .flip-hint{text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:14px}
+
+  /* Tipp (kleiner Hinweis auf Knopfdruck, ohne Lösung) */
+  .hint-btn{background:rgba(224,161,58,.12);border:1px solid rgba(224,161,58,.4);color:var(--warn);
+    font-size:.84rem;font-weight:700;padding:8px 14px;border-radius:10px;cursor:pointer;transition:.15s}
+  .hint-btn:hover{background:rgba(224,161,58,.2)}
+  .hint-box{margin-top:11px;background:rgba(224,161,58,.12);border:1px solid rgba(224,161,58,.35);
+    border-radius:10px;padding:11px 14px;font-size:.9rem;line-height:1.5;text-align:left}
+  .hint-box .lbl{font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--warn);display:block;margin-bottom:2px}
+
+  /* Info-Box (Kontext / Beleg+Quelle / Merktipp) */
+  .infobox{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:6px 0 14px}
+  .infobox .irow{display:flex;gap:11px;padding:12px 15px;font-size:.9rem;line-height:1.55;border-top:1px solid var(--border)}
+  .infobox .irow:first-child{border-top:none}
+  .infobox .ic{flex:0 0 auto;font-size:1.05rem;line-height:1.5}
+  .infobox .lbl{font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:block;margin-bottom:2px}
+  .infobox .quote{font-style:italic}
+  .infobox .src{display:block;color:var(--muted);font-size:.79rem;margin-top:4px}
+  .irow-kontext{background:var(--surface-2)}
+  .irow-beleg{background:rgba(61,111,180,.08)}
+  .irow-merk{background:rgba(224,161,58,.13)}
+  @media (prefers-color-scheme: dark){ .irow-merk{background:rgba(224,161,58,.15)} }
+
+  .answer-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .answer-row .btn{width:100%}
+  .btn-again{background:rgba(209,73,91,.14);color:var(--bad);border:1px solid rgba(209,73,91,.3)}
+  .btn-again:hover{background:rgba(209,73,91,.22)}
+  .btn-known{background:rgba(47,158,95,.15);color:var(--good);border:1px solid rgba(47,158,95,.32)}
+  .btn-known:hover{background:rgba(47,158,95,.24)}
+
+  .card-tools{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px}
+  .icon-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--muted);
+    width:42px;height:42px;border-radius:11px;cursor:pointer;font-size:1.1rem;display:flex;
+    align-items:center;justify-content:center}
+  .icon-btn:hover{color:var(--text)}
+  .box-tags{display:flex;gap:5px;align-items:center;font-size:.74rem;color:var(--muted);flex-wrap:wrap;justify-content:center}
+  .box-pill{padding:2px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border)}
+
+  /* Quiz */
+  .quiz-q{font-size:1.16rem;font-weight:700;line-height:1.42;margin-bottom:6px}
+  .quiz-hint{font-size:.8rem;color:var(--muted);margin-bottom:16px}
+  .opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--border);
+    background:var(--surface-2);border-radius:12px;padding:13px 15px;margin-bottom:10px;
+    cursor:pointer;transition:.13s}
+  .opt:hover{border-color:var(--accent)}
+  .opt.sel{border-color:var(--accent);background:rgba(61,111,180,.10)}
+  .opt .mark{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);
+    flex:0 0 auto;margin-top:1px;display:flex;align-items:center;justify-content:center;
+    font-size:.8rem;font-weight:800;color:#fff}
+  .opt.sel .mark{background:var(--accent);border-color:var(--accent)}
+  .opt .txt{font-size:.97rem;line-height:1.45}
+  .opt.correct{border-color:var(--good);background:rgba(47,158,95,.13)}
+  .opt.correct .mark{background:var(--good);border-color:var(--good)}
+  .opt.wrong{border-color:var(--bad);background:rgba(209,73,91,.12)}
+  .opt.wrong .mark{background:var(--bad);border-color:var(--bad)}
+  .opt.locked{cursor:default}
+  .expl{border-left:4px solid var(--accent);background:var(--surface-2);border-radius:0 12px 12px 0;
+    padding:14px 16px;margin:6px 0 16px;font-size:.94rem;line-height:1.55}
+  .expl .lbl{font-weight:800;color:var(--accent-2);display:block;margin-bottom:3px;font-size:.8rem;
+    letter-spacing:.04em;text-transform:uppercase}
+  .verdict{font-weight:800;margin-bottom:12px;font-size:1rem}
+  .verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
+
+  /* Result screen */
+  .result{text-align:center;padding:14px}
+  .result .big{font-size:3rem;font-weight:800;margin:8px 0}
+  .result .sub{color:var(--muted);margin-bottom:8px}
+  .grade{display:inline-block;padding:6px 16px;border-radius:999px;font-weight:800;margin:6px 0 20px}
+
+  .empty{text-align:center;color:var(--muted);padding:40px 10px}
+  .empty .em{font-size:2.4rem;margin-bottom:10px}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+  .stat{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+  .stat .n{font-size:1.5rem;font-weight:800}
+  .stat .l{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+
+  .hidden{display:none!important}
+  footer{text-align:center;color:var(--muted);font-size:.76rem;margin-top:26px;line-height:1.6}
+  a.linkish{color:var(--accent)}
+  @media (max-width:520px){
+    .brand h1{font-size:1.1rem}
+    .face .q{font-size:1.1rem}
+    .stat-grid{grid-template-columns:repeat(3,1fr)}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">🪵</div>
+      <div>
+        <h1>Baustoffkunde &amp; Bauphysik</h1>
+        <p id="brandSub">Karteikarten &amp; Prüfungstraining · Klausurvorbereitung</p>
+      </div>
+    </div>
+    <button class="reset-btn" id="resetBtn" title="Lernfortschritt zurücksetzen">↺ Fortschritt</button>
+  </header>
+
+  <div class="faecher" id="faecher">
+    <button data-fach="Baustoffkunde" class="active">🏗️ Baustoffkunde</button>
+    <button data-fach="Bauphysik">🌡️ Bauphysik</button>
+  </div>
+
+  <div class="modes">
+    <button data-mode="lernen" class="active">🃏 Karteikarten</button>
+    <button data-mode="pruefung">📝 Prüfung</button>
+    <button data-mode="stats">📊 Fortschritt</button>
+  </div>
+
+  <!-- SETUP -->
+  <div id="setup">
+    <div class="section-label">Themengebiete auswählen</div>
+    <div class="chips" id="chips"></div>
+    <div class="start-row">
+      <button class="btn btn-ghost" id="selAll">Alle</button>
+      <button class="btn btn-ghost" id="selNone">Keine</button>
+      <button class="btn btn-primary" id="startBtn">Los geht’s →</button>
+      <button class="btn btn-ghost hidden" id="repeatWrongBtn">🔁 Nur Fehler</button>
+    </div>
+    <p style="color:var(--muted);font-size:.82rem;margin-top:14px" id="setupInfo"></p>
+  </div>
+
+  <!-- LERNEN -->
+  <div id="lernenView" class="hidden">
+    <div class="panel">
+      <div class="progress-head">
+        <span id="lernPos">Karte 1 / 20</span>
+        <span id="lernBoxInfo"></span>
+      </div>
+      <div class="bar"><span id="lernBar"></span></div>
+
+      <div class="flash" id="flash">
+        <div class="flash-inner">
+          <div class="face face-front">
+            <div class="kicker"><span class="dot" id="lernDot"></span><span id="lernTopic">Thema</span></div>
+            <div class="q" id="lernFront"></div>
+          </div>
+          <div class="face face-back">
+            <div class="kicker"><span class="dot" style="background:var(--good)"></span>Antwort</div>
+            <div class="a" id="lernBack"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flip-hint" id="flipHint">Tippe auf die Karte oder drücke <b>Leertaste</b> zum Umdrehen</div>
+
+      <div id="hintWrap" style="text-align:center;margin-bottom:14px">
+        <button class="hint-btn" id="hintBtn">💡 Ich komme nicht drauf – kleiner Tipp</button>
+        <div class="hint-box hidden" id="lernHint"></div>
+      </div>
+
+      <div class="answer-row hidden" id="answerRow">
+        <button class="btn btn-again" id="btnAgain">↻ Nochmal</button>
+        <button class="btn btn-known" id="btnKnown">✓ Gewusst</button>
+      </div>
+
+      <div class="infobox hidden" id="lernInfo"></div>
+
+      <div class="card-tools">
+        <button class="icon-btn" id="prevCard" title="Zurück">←</button>
+        <div class="box-tags" id="boxTags"></div>
+        <button class="icon-btn" id="skipCard" title="Weiter">→</button>
+      </div>
+    </div>
+    <div class="start-row">
+      <button class="btn btn-ghost" id="backToSetup1">← Themen ändern</button>
+    </div>
+  </div>
+
+  <!-- PRÜFUNG -->
+  <div id="quizView" class="hidden">
+    <div class="panel" id="quizPanel">
+      <div class="progress-head">
+        <span id="quizPos">Frage 1 / 10</span>
+        <span id="quizScore">Richtig: 0</span>
+      </div>
+      <div class="bar"><span id="quizBar"></span></div>
+
+      <div class="kicker" style="font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span class="dot" id="quizDot" style="width:10px;height:10px;border-radius:50%"></span><span id="quizTopic"></span>
+      </div>
+      <div class="quiz-q" id="quizQ"></div>
+      <div class="quiz-hint">Mehrfachauswahl möglich – wähle <b>alle</b> zutreffenden Antworten.</div>
+      <div id="quizOpts"></div>
+      <div id="quizHintWrap" style="margin:4px 0 14px">
+        <button class="hint-btn" id="quizHintBtn">💡 Kleiner Tipp</button>
+        <div class="hint-box hidden" id="quizHint"></div>
+      </div>
+      <div id="quizExpl"></div>
+      <div class="start-row">
+        <button class="btn btn-primary" id="checkBtn">Antwort prüfen</button>
+        <button class="btn btn-primary hidden" id="nextBtn">Weiter →</button>
+      </div>
+    </div>
+
+    <div class="panel hidden result" id="quizResult"></div>
+
+    <div class="start-row">
+      <button class="btn btn-ghost" id="backToSetup2">← Themen ändern</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div id="statsView" class="hidden">
+    <div class="panel">
+      <div class="section-label" style="margin-top:0">Karteikarten – Leitner-Boxen</div>
+      <p style="font-size:.86rem;color:var(--muted);margin-bottom:14px">
+        Jede Karte wandert bei „Gewusst“ eine Box höher, bei „Nochmal“ zurück in Box 1.
+        Box 5 = sicher gelernt.
+      </p>
+      <div id="boxStats"></div>
+      <div class="section-label">Prüfung</div>
+      <div class="stat-grid">
+        <div class="stat"><div class="n" id="stQuizDone">0</div><div class="l">Fragen beantwortet</div></div>
+        <div class="stat"><div class="n" id="stQuizRight">0</div><div class="l">davon richtig</div></div>
+        <div class="stat"><div class="n" id="stQuizPct">0%</div><div class="l">Trefferquote</div></div>
+      </div>
+      <div id="wrongPanel" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <footer>
+    Lerninhalte aus der Vorlesung „Baustoffkunde“ (Prof. Dr.-Ing. M. Ayoubi).<br>
+    Fortschritt wird lokal in deinem Browser gespeichert. Für die Klausur gilt: verstehen &amp; nachrechnen — die Karten sind die Grundlage.
+  </footer>
+</div>
+
+<script src="daten.js"></script>
+<script>
+/* =========================================================================
+   Baustoffkunde Lern-App – Logik
+   =========================================================================*/
+const LS_KEY = "baustoffkunde_v1";
+const state = loadState();
+
+function loadState(){
+  try{ return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+function ensure(){
+  if(!state.boxes) state.boxes = {};        // kartenId -> Box (1..5), global (Index eindeutig)
+  if(!state.wrongQ) state.wrongQ = {};      // Schlüssel falsch beantworteter Fragen, global (qKey eindeutig)
+
+  // Prüfungsstatistik je Fach (Migration von altem flachen Format)
+  if(state.quiz && typeof state.quiz.done === "number"){
+    state.quiz = { Baustoffkunde: state.quiz };
+  }
+  if(!state.quiz) state.quiz = {};
+  FAECHER.forEach(f=>{ if(!state.quiz[f]) state.quiz[f] = {done:0, right:0}; });
+
+  // Themenauswahl je Fach (Migration von altem Array-Format)
+  if(Array.isArray(state.selected)){
+    state.selected = { Baustoffkunde: state.selected };
+  }
+  if(!state.selected || typeof state.selected !== "object") state.selected = {};
+  FAECHER.forEach(f=>{
+    if(!Array.isArray(state.selected[f])) state.selected[f] = THEMEN.filter(t=>t.fach===f).map(t=>t.id);
+  });
+
+  if(!state.fach || !FAECHER.includes(state.fach)) state.fach = "Baustoffkunde";
+}
+ensure();
+
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const themeById = id => THEMEN.find(t=>t.id===id);
+const cardId = k => KARTEN.indexOf(k);
+// Stabiler Schlüssel je Prüfungsfrage (aus dem Fragetext) – bleibt gültig, solange der Text gleich bleibt
+function qKey(f){ let h=0, s=f.q; for(let i=0;i<s.length;i++){ h=(h*31 + s.charCodeAt(i))|0; } return "q"+(h>>>0); }
+
+// ---- Fach-Helfer ----
+const curThemes = () => THEMEN.filter(t=>t.fach===state.fach);              // Themen des aktuellen Fachs
+const selNow    = () => state.selected[state.fach];                          // ausgewählte Themen-IDs im aktuellen Fach
+const inFach    = k => themeById(k.t).fach===state.fach;                     // gehört Karte/Frage zum aktuellen Fach?
+const wrongInFach = () => FRAGEN.filter(f=> inFach(f) && state.wrongQ[qKey(f)]); // offene Fehler des aktuellen Fachs
+
+// ---- Wissens-Info: Kontext / Beleg+Quelle / Merktipp (aus THEMA_INFO, karten-/fragenspezifisch überschreibbar) ----
+function infoFor(item){
+  const base = (typeof THEMA_INFO!=="undefined" && THEMA_INFO[item.t]) || {};
+  // Achtung: Prüfungsfragen nutzen item.q als Fragetext → Quelle NICHT aus item.q lesen (nur item.qSrc erlaubt).
+  return { k:item.k||base.k, z:item.z||base.z, q:item.qSrc||base.q, m:item.m||base.m };
+}
+function infoBoxHTML(item, includeKontext){
+  const i = infoFor(item); let h="";
+  if(includeKontext!==false && i.k)
+    h += `<div class="irow irow-kontext"><span class="ic">🧭</span><div><span class="lbl">Kontext</span>${i.k}</div></div>`;
+  if(i.z || i.q)
+    h += `<div class="irow irow-beleg"><span class="ic">📖</span><div><span class="lbl">Beleg aus den Unterlagen</span>`
+       + (i.z?`<span class="quote">${i.z}</span>`:``)
+       + (i.q?`<span class="src">Quelle: ${i.q}</span>`:``) + `</div></div>`;
+  if(i.m)
+    h += `<div class="irow irow-merk"><span class="ic">💡</span><div><span class="lbl">Merktipp</span>${i.m}</div></div>`;
+  return h;
+}
+
+// ---- Tipp (kleiner Hinweis ohne Lösung) ----
+// Karte: eigener Tipp (h) oder automatischer Cue aus den Schlüsselbegriffen (Anfangsbuchstaben).
+function autoHintCard(card){
+  const terms=[];
+  [...card.b.matchAll(/<b>(.*?)<\/b>/g)].forEach(m=>{
+    m[1].replace(/<[^>]+>/g,"").split(/,| und | oder | bzw\. |·|&/).forEach(x=>{
+      x=x.trim(); if(x && /[A-Za-zÄÖÜäöü]/.test(x)) terms.push(x);
+    });
+  });
+  const letters=[...new Set(terms.map(t=>{const mm=t.match(/[A-Za-zÄÖÜäöü]/);return mm?mm[0].toUpperCase():"";}).filter(Boolean))].slice(0,8);
+  if(letters.length>=2)
+    return `Denk an die Schlüsselbegriffe – Anfangsbuchstaben: <b>${letters.join(" · ")}</b>`;
+  if(letters.length===1)
+    return `Der zentrale Begriff beginnt mit <b>${letters[0]}</b>. Ruf das Grundprinzip des Themas ab.`;
+  return "Ruf das Grundprinzip des Themas ab – die ausführliche Erklärung siehst du nach dem Umdrehen.";
+}
+function cardHint(card){ return card.h || autoHintCard(card); }
+// Frage: eigener Tipp (h) oder Klausur-Hinweis „N von M richtig“ (verrät die Lösung nicht).
+function quizHintText(f){ return f.h || `Klausur-Hinweis: Es sind <b>${f.c.length} von ${f.o.length}</b> Antworten richtig.`; }
+
+let mode = "lernen";
+
+/* ---------------- Fach-Reiter ---------------- */
+function renderFaecher(){
+  $$("#faecher button").forEach(b=>{
+    b.classList.toggle("active", b.dataset.fach===state.fach);
+    b.onclick = ()=>{
+      if(state.fach===b.dataset.fach) return;
+      state.fach = b.dataset.fach; saveState();
+      renderFaecher();
+      showSetupOrView();
+    };
+  });
+}
+
+/* ---------------- Chips / Setup ---------------- */
+function renderChips(){
+  const box = $("#chips"); box.innerHTML = "";
+  const sel = selNow();
+  curThemes().forEach(t=>{
+    const n = KARTEN.filter(k=>k.t===t.id).length;
+    const on = sel.includes(t.id);
+    const el = document.createElement("div");
+    el.className = "chip" + (on?" on":"");
+    el.innerHTML = `<span class="dot" style="background:${t.farbe}"></span>${t.name}<span class="cnt">${n}</span>`;
+    el.onclick = ()=>{
+      const s = selNow();
+      if(s.includes(t.id)) state.selected[state.fach] = s.filter(x=>x!==t.id);
+      else s.push(t.id);
+      saveState(); renderChips(); updateSetupInfo();
+    };
+    box.appendChild(el);
+  });
+}
+function updateSetupInfo(){
+  const sel = selNow();
+  const cards = KARTEN.filter(k=>sel.includes(k.t)).length;
+  const qs = FRAGEN.filter(f=>sel.includes(f.t)).length;
+  const wrongCount = wrongInFach().length;
+  const rb = $("#repeatWrongBtn");
+  if(mode==="pruefung"){
+    rb.classList.remove("hidden");
+    rb.textContent = `🔁 Nur Fehler (${wrongCount})`;
+    rb.disabled = wrongCount===0;
+    $("#setupInfo").innerHTML = `<b>${qs}</b> Prüfungsfragen in den gewählten Themen.`
+      + (wrongCount ? ` · <b style="color:var(--bad)">${wrongCount}</b> offene Fehler zum Wiederholen.` : ``);
+  } else {
+    rb.classList.add("hidden");
+    $("#setupInfo").innerHTML = `<b>${cards}</b> Karteikarten in den gewählten Themen.`;
+  }
+  $("#startBtn").disabled = (mode==="pruefung"? qs : cards)===0;
+}
+
+/* ---------------- Mode switching ---------------- */
+$$(".modes button").forEach(b=>{
+  b.onclick = ()=>{
+    $$(".modes button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    mode = b.dataset.mode;
+    showSetupOrView();
+  };
+});
+function showSetupOrView(){
+  $("#brandSub").textContent = state.fach==="Baustoffkunde"
+    ? "Holz · Stahl · Grundlagen · Rechnen"
+    : "Wärme · Feuchte · Schall · Brand";
+  ["#lernenView","#quizView","#statsView","#setup"].forEach(s=>$(s).classList.add("hidden"));
+  if(mode==="stats"){ renderStats(); $("#statsView").classList.remove("hidden"); return; }
+  $("#setup").classList.remove("hidden");
+  $("#startBtn").textContent = mode==="pruefung" ? "Prüfung starten →" : "Lernen starten →";
+  renderChips(); updateSetupInfo();
+}
+
+$("#selAll").onclick = ()=>{ state.selected[state.fach] = curThemes().map(t=>t.id); saveState(); renderChips(); updateSetupInfo(); };
+$("#selNone").onclick = ()=>{ state.selected[state.fach] = []; saveState(); renderChips(); updateSetupInfo(); };
+$("#startBtn").onclick = ()=> mode==="pruefung" ? startQuiz(false) : startLernen();
+$("#repeatWrongBtn").onclick = ()=> startQuiz(true);
+$("#backToSetup1").onclick = ()=>{ $("#lernenView").classList.add("hidden"); showSetupOrView(); };
+$("#backToSetup2").onclick = ()=>{ $("#quizView").classList.add("hidden"); showSetupOrView(); };
+
+/* ---------------- Karteikarten (Leitner) ---------------- */
+let deck=[], di=0, flipped=false;
+
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function startLernen(){
+  const pool = KARTEN.filter(k=>selNow().includes(k.t));
+  if(!pool.length) return;
+  // Nach Leitner-Box sortiert: niedrige Boxen (weniger gekonnt) zuerst, innerhalb gemischt
+  const byBox = {};
+  pool.forEach(k=>{ const b = state.boxes[cardId(k)]||1; (byBox[b]=byBox[b]||[]).push(k); });
+  deck = [];
+  for(let b=1;b<=5;b++){ if(byBox[b]) deck = deck.concat(shuffle(byBox[b])); }
+  di=0; flipped=false;
+  $("#setup").classList.add("hidden");
+  $("#lernenView").classList.remove("hidden");
+  renderCard();
+}
+function renderCard(){
+  const k = deck[di];
+  const th = themeById(k.t);
+  const box = state.boxes[cardId(k)]||1;
+  $("#lernFront").innerHTML = k.f;
+  $("#lernBack").innerHTML = k.b;
+  $("#lernInfo").innerHTML = infoBoxHTML(k);
+  $("#lernTopic").textContent = th.name;
+  $("#lernDot").style.background = th.farbe;
+  $("#lernPos").textContent = `Karte ${di+1} / ${deck.length}`;
+  $("#lernBoxInfo").innerHTML = `Box <b>${box}</b> / 5`;
+  $("#lernBar").style.width = ((di)/deck.length*100)+"%";
+  flipped=false;
+  $("#flash").classList.remove("flipped");
+  $("#answerRow").classList.add("hidden");
+  $("#lernInfo").classList.add("hidden");
+  $("#flipHint").classList.remove("hidden");
+  $("#hintWrap").classList.remove("hidden");
+  $("#lernHint").classList.add("hidden");
+  $("#hintBtn").classList.remove("hidden");
+  // Box-Übersicht des aktuellen Decks
+  const counts=[0,0,0,0,0];
+  deck.forEach(c=>{ counts[(state.boxes[cardId(c)]||1)-1]++; });
+  $("#boxTags").innerHTML = counts.map((n,i)=>`<span class="box-pill">B${i+1}: ${n}</span>`).join("");
+}
+function doFlip(){
+  flipped=!flipped;
+  $("#flash").classList.toggle("flipped",flipped);
+  $("#answerRow").classList.toggle("hidden",!flipped);
+  $("#lernInfo").classList.toggle("hidden",!flipped);
+  $("#flipHint").classList.toggle("hidden",flipped);
+  $("#hintWrap").classList.toggle("hidden",flipped);
+}
+$("#hintBtn").onclick = (e)=>{
+  e.stopPropagation();
+  $("#lernHint").innerHTML = `<span class="lbl">Tipp</span>${cardHint(deck[di])}`;
+  $("#lernHint").classList.remove("hidden");
+  $("#hintBtn").classList.add("hidden");
+};
+$("#flash").onclick = doFlip;
+
+function grade(known){
+  const k = deck[di];
+  const id = cardId(k);
+  let b = state.boxes[id]||1;
+  b = known ? Math.min(5,b+1) : 1;
+  state.boxes[id]=b; saveState();
+  nextCard();
+}
+$("#btnKnown").onclick = (e)=>{ e.stopPropagation(); grade(true); };
+$("#btnAgain").onclick = (e)=>{ e.stopPropagation(); grade(false); };
+$("#skipCard").onclick = nextCard;
+$("#prevCard").onclick = ()=>{ if(di>0){di--; renderCard();} };
+
+function nextCard(){
+  if(di < deck.length-1){ di++; renderCard(); }
+  else finishLernen();
+}
+function finishLernen(){
+  $("#lernBar").style.width="100%";
+  const view = $("#lernenView");
+  view.querySelector(".panel").innerHTML = `
+    <div class="result">
+      <div class="big">🎉</div>
+      <div class="verdict ok">Durchgang geschafft!</div>
+      <p class="sub">Du hast alle ${deck.length} Karten dieser Runde durchgearbeitet.</p>
+      <div class="start-row" style="justify-content:center">
+        <button class="btn btn-ghost" id="againLern">🔁 Nochmal lernen</button>
+        <button class="btn btn-primary" id="toStats">📊 Fortschritt ansehen</button>
+      </div>
+    </div>`;
+  $("#againLern").onclick = ()=>location.reload();
+  $("#toStats").onclick = ()=>{ location.hash=""; document.querySelector('[data-mode="stats"]').click(); location.reload(); };
+}
+
+/* Tastatur */
+document.addEventListener("keydown",e=>{
+  if($("#lernenView").classList.contains("hidden")) return;
+  if(e.code==="Space"){ e.preventDefault(); doFlip(); }
+  else if(e.key==="ArrowRight") nextCard();
+  else if(e.key==="ArrowLeft" && di>0){ di--; renderCard(); }
+  else if(flipped && (e.key==="1")) grade(false);
+  else if(flipped && (e.key==="2")) grade(true);
+});
+
+/* ---------------- Prüfung ---------------- */
+let qDeck=[], qi=0, qRight=0, selected=new Set(), locked=false, quizOnlyWrong=false;
+let qOrder=[], qCorrect=new Set();   // gemischte Anzeigereihenfolge + richtige Anzeige-Indizes
+
+function startQuiz(onlyWrong){
+  quizOnlyWrong = !!onlyWrong;
+  const pool = quizOnlyWrong
+    ? wrongInFach()                                       // nur bisher falsch beantwortete (aktuelles Fach)
+    : FRAGEN.filter(f=>selNow().includes(f.t));           // gewählte Themen des aktuellen Fachs
+  if(!pool.length) return;
+  qDeck = shuffle(pool); qi=0; qRight=0;
+  $("#setup").classList.add("hidden");
+  $("#quizResult").classList.add("hidden");
+  $("#quizPanel").classList.remove("hidden");
+  $("#quizView").classList.remove("hidden");
+  renderQuestion();
+}
+function renderQuestion(){
+  const f = qDeck[qi];
+  const th = themeById(f.t);
+  selected=new Set(); locked=false;
+  $("#quizTopic").textContent = th.name;
+  $("#quizDot").style.background = th.farbe;
+  $("#quizQ").innerHTML = f.q;
+  $("#quizPos").textContent = `Frage ${qi+1} / ${qDeck.length}`;
+  $("#quizScore").textContent = `Richtig: ${qRight}`;
+  $("#quizBar").style.width = (qi/qDeck.length*100)+"%";
+  $("#quizExpl").innerHTML = "";
+  $("#checkBtn").classList.remove("hidden");
+  $("#nextBtn").classList.add("hidden");
+  $("#quizHintWrap").classList.remove("hidden");
+  $("#quizHint").classList.add("hidden");
+  $("#quizHintBtn").classList.remove("hidden");
+
+  // Optionen zufällig anordnen, damit die richtigen Antworten nicht immer oben stehen
+  qOrder = shuffle(f.o.map((_,i)=>i));
+  qCorrect = new Set();
+  qOrder.forEach((orig,disp)=>{ if(f.c.includes(orig)) qCorrect.add(disp); });
+  const box = $("#quizOpts"); box.innerHTML="";
+  qOrder.forEach((orig,disp)=>{
+    const el=document.createElement("div");
+    el.className="opt"; el.dataset.i=disp;
+    el.innerHTML=`<span class="mark"></span><span class="txt">${f.o[orig]}</span>`;
+    el.onclick=()=>{
+      if(locked) return;
+      if(selected.has(disp)){ selected.delete(disp); el.classList.remove("sel"); el.querySelector(".mark").textContent=""; }
+      else{ selected.add(disp); el.classList.add("sel"); el.querySelector(".mark").textContent="✓"; }
+    };
+    box.appendChild(el);
+  });
+}
+$("#quizHintBtn").onclick = ()=>{
+  $("#quizHint").innerHTML = `<span class="lbl">Tipp</span>${quizHintText(qDeck[qi])}`;
+  $("#quizHint").classList.remove("hidden");
+  $("#quizHintBtn").classList.add("hidden");
+};
+$("#checkBtn").onclick = ()=>{
+  if(locked) return;
+  const f = qDeck[qi];
+  locked=true;
+  $("#quizHintWrap").classList.add("hidden");
+  const correct = qCorrect;   // richtige Anzeige-Indizes (nach dem Mischen)
+  let allRight = correct.size===selected.size && [...correct].every(c=>selected.has(c));
+  $$("#quizOpts .opt").forEach(el=>{
+    const i=+el.dataset.i; el.classList.add("locked");
+    if(correct.has(i)){ el.classList.add("correct"); el.querySelector(".mark").textContent="✓"; }
+    else if(selected.has(i)){ el.classList.add("wrong"); el.querySelector(".mark").textContent="✕"; }
+  });
+  if(allRight) qRight++;
+  // Fehler merken bzw. bei richtiger Antwort aus der Fehlerliste entfernen
+  const key = qKey(f);
+  if(allRight) delete state.wrongQ[key];
+  else state.wrongQ[key] = true;
+  state.quiz[state.fach].done++; if(allRight) state.quiz[state.fach].right++; saveState();
+  $("#quizScore").textContent = `Richtig: ${qRight}`;
+  const richtig = [...qCorrect].sort((a,b)=>a-b).map(disp=> `<b>${String.fromCharCode(97+disp)})</b> ${f.o[qOrder[disp]]}`).join("<br>");
+  $("#quizExpl").innerHTML =
+    `<div class="verdict ${allRight?'ok':'no'}">${allRight?'✓ Richtig!':'✕ Nicht ganz.'}</div>`+
+    `<div class="expl" style="border-left-color:var(--good)"><span class="lbl" style="color:var(--good)">Richtige Antwort${f.c.length>1?'en':''}</span>${richtig}</div>`+
+    `<div class="expl"><span class="lbl">Warum (auch: warum die anderen falsch sind)</span>${f.e}</div>`+
+    `<div class="infobox">${infoBoxHTML(f, false)}</div>`;
+  $("#checkBtn").classList.add("hidden");
+  $("#nextBtn").classList.remove("hidden");
+};
+$("#nextBtn").onclick = ()=>{
+  if(qi<qDeck.length-1){ qi++; renderQuestion(); }
+  else finishQuiz();
+};
+function finishQuiz(){
+  $("#quizPanel").classList.add("hidden");
+  const pct = Math.round(qRight/qDeck.length*100);
+  let grade, color;
+  if(pct>=90){grade="Sehr gut 🏆";color="var(--good)";}
+  else if(pct>=75){grade="Gut 👍";color="var(--good)";}
+  else if(pct>=50){grade="Solide – dranbleiben 💪";color="var(--warn)";}
+  else{grade="Noch üben 📚";color="var(--bad)";}
+  const wrongLeft = wrongInFach().length;
+  const r=$("#quizResult");
+  r.innerHTML=`
+    <div class="big">${qRight} / ${qDeck.length}</div>
+    <div class="sub">${quizOnlyWrong ? "Fehler-Wiederholung" : "richtig beantwortet"} · ${state.fach}</div>
+    <div class="grade" style="background:${color}22;color:${color}">${grade} · ${pct}%</div>
+    ${wrongLeft
+      ? `<p class="sub" style="margin-bottom:16px"><b style="color:var(--bad)">${wrongLeft}</b> Frage(n) sind noch offen (falsch beantwortet).</p>`
+      : `<p class="sub" style="margin-bottom:16px;color:var(--good)">✓ Keine offenen Fehler mehr – stark!</p>`}
+    <div class="start-row" style="justify-content:center">
+      <button class="btn btn-ghost" id="quizAgain">🔁 Nochmal</button>
+      ${wrongLeft ? `<button class="btn btn-primary" id="quizWrong">✗ Fehler wiederholen (${wrongLeft})</button>` : ``}
+      <button class="btn btn-ghost" id="quizThemes">← Themen ändern</button>
+    </div>`;
+  r.classList.remove("hidden");
+  $("#quizAgain").onclick=()=>startQuiz(quizOnlyWrong);
+  const qw=$("#quizWrong"); if(qw) qw.onclick=()=>startQuiz(true);
+  $("#quizThemes").onclick=()=>{ $("#quizView").classList.add("hidden"); $("#quizResult").classList.add("hidden"); $("#quizPanel").classList.remove("hidden"); $("#setup").classList.remove("hidden"); showSetupOrView(); };
+}
+
+/* ---------------- Stats ---------------- */
+function renderStats(){
+  const fachCards = KARTEN.filter(inFach);
+  const counts=[0,0,0,0,0];
+  fachCards.forEach(k=>{ counts[(state.boxes[cardId(k)]||1)-1]++; });
+  const total=fachCards.length;
+  const labels=["Box 1 · neu / nochmal","Box 2","Box 3","Box 4","Box 5 · sicher"];
+  const cols=["#d1495b","#e0a13a","#c9b93a","#7bb04a","#2f9e5f"];
+  $("#boxStats").innerHTML = counts.map((n,i)=>{
+    const pct = total? Math.round(n/total*100):0;
+    return `<div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:5px">
+        <span>${labels[i]}</span><span style="color:var(--muted)">${n} Karten</span></div>
+      <div class="bar" style="margin:0"><span style="width:${pct}%;background:${cols[i]}"></span></div>
+    </div>`;
+  }).join("");
+  const learned = counts[4];
+  $("#boxStats").innerHTML += `<p style="font-size:.86rem;color:var(--muted);margin-top:14px">
+    <b style="color:var(--good)">${learned}</b> von ${total} Karten sicher gelernt (Box 5) · Fach: <b>${state.fach}</b>.</p>`;
+  const qz = state.quiz[state.fach];
+  $("#stQuizDone").textContent = qz.done;
+  $("#stQuizRight").textContent = qz.right;
+  $("#stQuizPct").textContent = qz.done? Math.round(qz.right/qz.done*100)+"%":"0%";
+  const wrongLeft = wrongInFach().length;
+  const wp = $("#wrongPanel");
+  if(wrongLeft){
+    wp.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+        background:rgba(209,73,91,.10);border:1px solid rgba(209,73,91,.3);border-radius:12px;padding:12px 15px">
+      <span style="font-size:.9rem"><b style="color:var(--bad)">${wrongLeft}</b> offene Fehler zum Wiederholen</span>
+      <button class="btn btn-primary" id="statWrongBtn" style="padding:9px 16px;font-size:.9rem">✗ Jetzt wiederholen</button>
+    </div>`;
+    $("#statWrongBtn").onclick = ()=>{
+      $("#statsView").classList.add("hidden");
+      $$(".modes button").forEach(x=>x.classList.remove("active"));
+      document.querySelector('[data-mode="pruefung"]').classList.add("active");
+      mode="pruefung";
+      startQuiz(true);
+    };
+  } else {
+    wp.innerHTML = `<p style="font-size:.86rem;color:var(--good)">✓ Keine offenen Fehler – alle falsch beantworteten Fragen wurden bereits korrigiert.</p>`;
+  }
+}
+
+/* ---------------- Reset ---------------- */
+$("#resetBtn").onclick = ()=>{
+  if(confirm("Gesamten Lernfortschritt (Karteikarten-Boxen & Prüfungsstatistik) wirklich zurücksetzen?")){
+    localStorage.removeItem(LS_KEY);
+    location.reload();
+  }
+};
+
+/* ---------------- Init ---------------- */
+renderFaecher();
+showSetupOrView();
+</script>
+</body>
+</html>
