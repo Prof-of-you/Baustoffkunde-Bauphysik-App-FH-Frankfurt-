@@ -404,6 +404,7 @@ function infoBoxHTML(item, includeKontext){
 // Karte: eigener Tipp (h) oder themenbezogener Denk-Anstoß aus TIPPS.
 function cardHint(card){
   return card.h
+      || (typeof KARTEN_TIPP!=="undefined" && KARTEN_TIPP[card.f])
       || (typeof TIPPS!=="undefined" && TIPPS[card.t])
       || "Ruf das Grundprinzip des Themas ab – die ausführliche Erklärung siehst du nach dem Umdrehen.";
 }

@@ -1624,6 +1624,293 @@ const TIPPS = {
   "bp-brand": "Trenne zwei Klassensysteme: Wie brennbar ist der Baustoff (A oder B) und wie lange hält das Bauteil stand (F plus Minutenzahl)?"
 };
 
+/* ---- KARTEN_TIPP ----
+   Karten-spezifischer Denkanstoß (Schlüssel = exakter Kartentext auf der Vorderseite).
+   Führt zum Konzept der jeweiligen Karte, ohne die Lösung zu nennen. */
+const KARTEN_TIPP = {
+  /* Holz – Aufbau & Anatomie */
+  "Wodurch wächst ein Baum in die Dicke?": "Nicht Länge, sondern Breite: Welche dünne, teilungsfähige Schicht zwischen Holz und Rinde ist dafür zuständig?",
+  "Was ist das Kambium?": "Denk an eine hauchdünne Schicht genau an der Grenze Holz/Rinde – was passiert dort mit den Zellen?",
+  "Unterschied Frühholz ↔ Spätholz": "Verknüpfe es mit der Jahreszeit: Was braucht der Baum im Frühjahr (schnell wachsen) und was im Sommer (tragen)? Das bestimmt Wanddicke und Porengröße.",
+  "Unterschied Kernholz ↔ Splintholz": "Frag dich: innen oder außen, lebend oder abgestorben? Und was bewirken eingelagerte Stoffe für Farbe und Dauerhaftigkeit?",
+  "Wie breit ist ein Jahrring typischerweise – und wovon hängt er ab?": "Millimeterbereich, stark umweltabhängig – merke: eng = feinjährig = fest, breit = grobjährig.",
+  "Was sind Holz-/Markstrahlen?": "Feine helle Linien vom Mark nach außen – in welche Richtung transportieren sie (radial oder längs)?",
+  "Wofür dienen Harzkanäle?": "Sie transportieren etwas Klebriges und verkleben Wunden – nicht in jeder Holzart vorhanden.",
+  "Was ist die Markröhre (Mark)?": "Das dünne Zentrum des jungen Sprosses – was speichert/leitet es, und wie lange lebt es?",
+  "Die 3 Hauptbestandteile der Holzsubstanz (92–98 M.-%)": "Drei Stoffe bilden fast die ganze Zellwand: einer ist das Gerüst, einer umhüllt/verholzt, einer verbindet die beiden.",
+  "Welche Aufgabe hat Zellulose im Holz?": "Sie bildet das Gerüst aus langen Fasern – welche Beanspruchung nimmt so etwas besonders gut auf?",
+  "Welche Aufgabe hat Lignin im Holz?": "Es umhüllt und versteift das Gerüst (Verholzung) – welche Beanspruchung wird dadurch möglich, das Gegenteil von Ziehen?",
+  "Welche Aufgabe hat Hemizellulose?": "Der Vermittler: Denk an die Verbindung zwischen den beiden anderen Hauptbestandteilen.",
+  "Woraus besteht das Xylem bei Nadelholz – und wie viel Anteil?": "Nadelholz ist einfach gebaut – eine einzige Zellart macht 90–95 % aus und leitet das Wasser.",
+  "Wie transportiert Laubholz Wasser (statt über Tracheiden)?": "Laubholz ist stärker spezialisiert: weitlumige Gefäße, im Querschnitt als Poren sichtbar.",
+  "Was bedeutet ringporig ↔ zerstreutporig?": "Wie sind die großen Poren im Jahrring angeordnet – gehäuft im Frühholzring oder gleichmäßig verteilt? (Eiche vs. Buche)",
+  "Die 3 wichtigen Schnittrichtungen im Holz": "Denk an die Lage zur Stammachse: quer, durch die Mitte, oder außerhalb der Mitte – jeweils anderes Jahrringbild.",
+
+  /* Holz – Feuchte & Dichte */
+  "Formel & Definition der Holzfeuchte u": "Wassermasse bezogen auf welche Masse – die feuchte oder die trockene? Das ist die entscheidende Bezugsgröße.",
+  "Welche Feuchte hat frisch geschlagenes Holz?": "Deutlich über der Fasersättigung – denk an den oberen Bereich der Skala (Zehner-Prozente).",
+  "Was ist der Fasersättigungspunkt (FSP)?": "Zellwände voll, Hohlräume noch leer – der Wendepunkt, ab dem Schwinden einsetzt. Bereich um 30 %.",
+  "Was ist die Gleichgewichts-/Ausgleichsfeuchte?": "Feuchte, bei der kein Austausch mehr stattfindet – ist sie konstant oder klimaabhängig?",
+  "Charakteristische Holzfeuchte in den Nutzungsklassen (NKL)": "Von innen/trocken bis außen/feucht: ordne NKL 1/2/3 steigenden Feuchten zu.",
+  "Wie wird die Holzfeuchte im Darrverfahren bestimmt? (DIN EN 13183-1)": "Trocknen bis zur Gewichtskonstanz bei gut 100 °C – die Feuchte ergibt sich aus dem Gewichtsunterschied.",
+  "Definition & Formel der Dichte (Reindichte) ρ": "Masse pro Volumen – aber welches Volumen: mit oder ohne Poren? (Reindichte = reine Substanz)",
+  "Definition & Formel der Rohdichte ρ_R": "Wie Dichte, aber das Volumen enthält die Poren mit – deshalb bei Holz viel kleiner.",
+  "Rohdichte-Extremwerte im Holz": "Denk an das leichteste (Balsa) und das schwerste (Pock-)Holz – Faktor rund 10 dazwischen.",
+  "Definition & Formel der Porigkeit (Porosität) P": "Anteil der Poren am Gesamtvolumen – bzw. als Gegenstück zum Feststoffanteil (100 % minus d).",
+  "Rechenbeispiel: Porenanteil von Balsaholz (ρ_R=130, ρ=1550)": "Feststoffanteil = Rohdichte/Reindichte; der Rest zu 100 % sind die Poren. Balsa ist extrem porig.",
+  "Was ist Adsorption im Holz?": "Anlagerung von Wasser an Oberflächen – bei niedriger Luftfeuchte einlagig, bei hoher mehrlagig.",
+  "Definition Schüttdichte ρ_s": "Für Schüttgut: Masse bezogen auf das Gefäßvolumen – die Zwischenräume zählen mit.",
+
+  /* Holz – Mechanik & Verformung */
+  "Rangfolge der Festigkeiten von Holz (bezogen auf Zugfestigkeit ∥ Faser)": "Sortiere absteigend: Ziehen am stärksten, Scheren am schwächsten – merke grob 100/80/50/10 %.",
+  "Warum ist Holz anisotrop?": "Denk an die Ausrichtung der Fasern: längs anders als quer – das macht Holz richtungsabhängig.",
+  "Zusammenhang Rohdichte ↔ Festigkeit": "Mehr Zellwandsubstanz = mehr Festigkeit – linear oder gekrümmt?",
+  "Wie beeinflusst die Holzfeuchte die Festigkeit? (im hygroskopischen Bereich)": "Wasser weicht die Bindungen auf – welche Festigkeit trifft es stärker, Druck oder Zug?",
+  "Nadelholz ↔ Laubholz: Druckfestigkeit": "Wer ist dichter und damit druckfester?",
+  "Hooksches Gesetz – Formel & Bedeutung": "Proportional: Spannung zu Dehnung, verknüpft über welchen Materialkennwert? Und gilt nur bis wohin?",
+  "Definition der Dehnung ε": "Relative Längenänderung – dimensionslos und unabhängig von der Anfangslänge.",
+  "Zug-/Druckspannung – Formel": "Kraft pro Fläche – die flächenunabhängige Größe zum Materialvergleich.",
+  "Schwinden & Quellen – was passiert und ab wann?": "Maßänderung nur unterhalb der Fasersättigung – welches Wasser hat KEINEN Einfluss (gebunden oder frei)?",
+  "Verhältnis Schwinden/Quellen in den 3 Raumrichtungen (Nadelholz)": "Merke die Reihe 1 : 10 : 20 – welche Richtung (längs/radial/tangential) ändert sich am stärksten?",
+  "Unterschied Quelldehnung ↔ Schwinddehnung (Bezugslänge)": "Beide beziehen sich auf eine Länge – Quellen auf die darrtrockene, Schwinden auf die nasse.",
+  "Was ist Kriechen?": "Verformung nimmt bei GLEICHER Dauerlast mit der Zeit zu – verstärkt durch Feuchte und Temperatur.",
+  "Formel der Kriechzahl φ": "Verhältnis zweier Dehnungen: die zeitabhängige (Kriech-) zur sofortigen (elastischen).",
+  "Was ist (Spannungs-)Relaxation?": "Gegenstück zum Kriechen: Verformung konstant gehalten – was passiert mit der Spannung? (Schraubzwinge)",
+  "Biegespannung im Einfeldträger (mittige Einzellast) – Formel": "σ = Moment/Widerstandsmoment; bei mittiger Last M = F·l/4, W = b·h²/6.",
+  "Biegemoment bei Gleichlast q (Einfeldträger)": "Nicht F·l/4, sondern die Gleichlast-Variante mit l² – erinnere dich an q·l²/8.",
+  "Dauerstandfestigkeit von Holz": "Nur ein Bruchteil der Kurzzeitfestigkeit hält dauerhaft – Größenordnung unter 60 %.",
+  "Wovon hängt die Härte des Holzes ab? (Brinell)": "Art, Rohdichte, Feuchte – und Richtung. Trockenes Holz ist härter; längs oder quer härter?",
+
+  /* Holz – Schäden & Schutz */
+  "Die zwei zentralen Parameter für biologischen Holzbefall": "Zwei Umgebungsgrößen entscheiden über Pilz/Insekt – eine davon lässt sich baulich steuern.",
+  "Einteilung der holzzerstörenden Pilze nach Fäuletyp": "Drei Typen, benannt nach der Farbe/Erscheinung des geschädigten Holzes.",
+  "Braunfäule – was wird abgebaut, wie sieht es aus?": "Der helle Bestandteil wird gefressen, das braune Lignin bleibt – typisches Rissbild in Würfeln.",
+  "Weißfäule – was wird abgebaut, wie sieht es aus?": "Hier wird gerade der braune Bestandteil abgebaut – das Holz wird hell und faserig.",
+  "Moderfäule (MF) – wann tritt sie auf?": "Bei sehr hoher Feuchte im Erdkontakt – welcher Bestandteil wird bevorzugt abgebaut?",
+  "Was bewirken Bläuepilze (holzverfärbende Pilze)?": "Nur Optik: Verfärbung ohne Zellwandabbau – was heißt das für die Festigkeit?",
+  "Echter Hausschwamm – warum so gefährlich?": "Er transportiert Wasser selbst und durchwächst sogar Mauerwerk – deshalb aufwendige Sanierung.",
+  "Wichtige holzzerstörende Insekten (Trockenholz)": "Denk an die Käfer und ihre Fluglochform/Holzart – zerstört wird durch die Larven.",
+  "Was ist baulicher (konstruktiver) Holzschutz?": "Ohne Chemie: Konstruktion so gestalten, dass sich keine Feuchte anreichert (Dachüberstand, Tropfkanten).",
+  "Baulicher Holzschutz: Höhe des Spritzwasserschutzes am Sockel": "Ein Mindestmaß am Sockel gegen Spritzwasser – denk an etwa 30 cm.",
+  "Was ist chemischer Holzschutz?": "Der Gegensatz zum baulichen: Schutzmittel einbringen (imprägnieren, tränken).",
+  "Aufgaben der Oberflächenbehandlung/Beschichtung von Holz": "Mehr als Deko: Schutz vor Auffeuchtung, vor Organismen und besonders vor UV.",
+  "Chemische Beständigkeit von Holz (pH-Bereich)": "In einem mittleren pH-Fenster ist Holz recht beständig – nur stark sauer/alkalisch greift an.",
+
+  /* Holz – Bauholz & Sortierung */
+  "Die 3 visuellen Sortierklassen nach DIN 4074-1 (Nadelschnittholz)": "S plus Zahl – und die Zahl ist zugleich eine mechanische Kenngröße (zulässige Biegespannung).",
+  "Zuordnung visuelle ↔ maschinelle Sortierklasse / Festigkeitsklasse": "S7/S10/S13 gehören zu C16/C24/C30 – ordne aufsteigend zu.",
+  "Welche Merkmale werden bei der visuellen Sortierung geprüft?": "Nur sichtbare Wuchs-/Gefügemerkmale – NICHT die gemessene Festigkeit oder Feuchte.",
+  "Welche Risse sind generell NICHT zulässig?": "Die, die schon am Rundholz da sind – nicht die Trocknungsrisse.",
+  "Wie wird die Ästigkeit A bestimmt?": "Als Verhältniswert (Astgröße zur Seite) – und der ungünstigste Wert zählt.",
+  "Faserneigung – Grenzwerte für Kanthölzer (S7/S10/S13)": "Je höher die Klasse, desto kleiner die erlaubte Neigung – S13 am strengsten.",
+  "Markröhre – Zulässigkeit je Sortierklasse": "In den unteren Klassen erlaubt, in der höchsten (S13) nicht.",
+  "Was ist Druckholz?": "Reaktionsholz der Nadelhölzer an der Unterseite schiefer Stämme – rötlich, mehr Lignin, höhere Rohdichte.",
+  "Schnittholzeinteilung nach DIN 4074-1 (Latte, Brett, Bohle, Kantholz)": "Unterscheide nach Dicke und Breite – denk an die Grenzen 40 mm Dicke und 80 mm Breite.",
+  "Definition Schnittholz (DIN 4074-1)": "Mindestens 6 mm dick, durch Sägen parallel zur Stammachse.",
+  "Vorteile Nadelholz ↔ Laubholz als Baustoff": "Nadel: leicht, wenig Schwinden, billig. Laub: dichter, härter, druckfester – ordne die Vorteile zu.",
+  "Vor-/Nachteile Rundholz gegenüber Schnittholz": "Rundholz: ungestörter Faserverlauf, mehr Tragfähigkeit – aber schwerer zu verbinden/transportieren.",
+
+  /* Holz – BSH & Holzwerkstoffe */
+  "Was ist Brettschichtholz (BSH / GL)?": "Mindestens drei parallel geschichtete, verklebte Bretter (Lamellen) – Standard aus Fichte.",
+  "Vorteile von Brettschichtholz gegenüber Vollholz": "Größere/gekrümmte Querschnitte, formstabiler bei Feuchte – denk an das Verkleben vieler Lamellen.",
+  "Homogener ↔ kombinierter Aufbau bei BSH": "Alle Lamellen gleich (homogen) oder höherwertige außen/geringere innen (kombiniert)?",
+  "Besonderheiten von Baufurniersperrholz (BFU) ggü. Bauschnittholz": "Kreuzweise verleimte Furniere – Kraft in zwei Richtungen, geringere Anisotropie.",
+  "Was sind Holzwerkstoffe? (Definition)": "Zerkleinern und neu zusammenfügen – Größe/Form der Partikel bestimmt die Art.",
+  "Vorteile von Holzwerkstoffen ggü. Bauschnittholz": "Homogener, formstabiler, weniger anisotrop – Preis: mehr Energie, ggf. Schadstoffe.",
+  "Nass- ↔ Trockenverfahren (Faserplatten)": "Mit oder ohne Bindemittel? Im Nassverfahren hält das holzeigene Lignin die Fasern zusammen.",
+  "Was ist Brettsperrholz (BSP / CLT)?": "Flächiges Massivholz aus mindestens drei RECHTWINKLIG zueinander verklebten Brettlagen.",
+  "Was ist Furnierschichtholz (FSH)?": "Aus ca. 3 mm Schälfurnieren, überwiegend PARALLEL zur Längsrichtung verklebt.",
+  "Anorganische ↔ organische Bindemittel für Holzwerkstoffe": "Mineralisch (Zement/Gips): nicht brennbar. Organisch (Harze): fester, aber Formaldehyd-Thema.",
+  "Warum ist Formaldehyd bei Holzwerkstoffen relevant?": "Es stammt aus den Leimen und ist seit 2014 als krebserzeugend eingestuft – daher Emissionsgrenzwerte.",
+
+  /* Stahl – Herstellung & Gefüge */
+  "Definition Stahl (DIN EN 10020)": "Eisenwerkstoff mit einer Obergrenze beim Kohlenstoff – denk an bis 2 % C.",
+  "Roheisen ↔ Gusseisen ↔ Stahl (C-Gehalt)": "Ordne nach fallendem C-Gehalt: rund 5 % / 2–3 % / bis 2 %.",
+  "Was ist „Frischen“?": "C-Gehalt und Begleitelemente senken – wodurch? Denk an die Reaktion mit Sauerstoff (Oxidation).",
+  "Die zwei Verfahren der Stahlerzeugung": "Eines mit eingeblasenem Sauerstoff (Konverter), eines elektrisch (vor allem für Schrott).",
+  "Einfluss des Kohlenstoffgehalts auf den Stahl": "Wenig C = weich/zäh/schweißbar; viel C = hart/spröde. Wo liegt die Schweißbarkeitsgrenze?",
+  "Unberuhigt (FU) vergossener Stahl": "Sauerstoff bleibt drin → Gasblasen, Seigerungen. Homogen oder inhomogen? Randzone weich?",
+  "Vollberuhigt (FF) vergossener Stahl": "Mit Aluminium beruhigt: sauber, feinkörnig, zäh – gut zu verformen und zu schweißen.",
+  "Was ist Desoxidation?": "Sauerstoff entfernen durch Stoffe mit höherer Sauerstoff-Affinität als Eisen (Si, Ca, Mn).",
+  "Blockguss ↔ Strangguss": "Diskontinuierlich in Kokillen (selten) vs. kontinuierlich (~90 %, weniger Schrott).",
+  "Ferrit (α-Eisen) – Eigenschaften": "Das kubisch-raumzentrierte α-Gitter – kann es Kohlenstoff lösen? Weich und zäh wie reines Eisen.",
+  "Austenit (γ-Eisen) – Eigenschaften": "Das größere γ-Gitter (flächenzentriert) – kann viel mehr C lösen; daraus entsteht bei schnellem Abkühlen Martensit.",
+  "Zementit (Fe₃C) & Perlit": "Eisenkarbid: sehr hart/spröde. Perlit = Lamellen aus Ferrit + Zementit (Punkt bei 0,8 % C / 723 °C).",
+  "Was ist Martensit?": "Entsteht durch schnelles Abschrecken – nadelig, sehr hart, aber kaum Bruchdehnung (spröde).",
+  "Warmumformung (naturhart) ↔ Kaltumformung": "Über oder unter der Rekristallisationstemperatur? Kalt = Festigkeit hoch, Zähigkeit runter, blanke Oberfläche.",
+  "Einfluss der Korngröße auf die Stahleigenschaften": "Fein = fest und zäh (Isotropie); grob = schlechter, nur besser zerspanbar. Schnelles Abkühlen → feiner.",
+
+  /* Stahl – Wärmebehandlung */
+  "Die 3 Schritte beim Glühen": "Erwärmen – Halten – langsam Abkühlen: drei Phasen.",
+  "Normalglühen – Zweck & Ablauf": "Knapp über den Umwandlungspunkt, dann langsam an der Luft → feinkörniges, gleichmäßiges Gefüge.",
+  "Weichglühen – Zweck": "Härte/Festigkeit senken → besser zerspanen und kaltverformen.",
+  "Spannungsarmglühen – Zweck": "Eigenspannungen abbauen OHNE das Gefüge zu ändern (z. B. nach dem Schweißen).",
+  "Härten – Ziel & Ablauf": "Sehr schnell abschrecken → Martensit → hart, aber spröde.",
+  "Vergüten – was und warum?": "Härten und dann wieder anlassen: der spröde Martensit wird zäher – Kombination aus beidem.",
+  "Die 3 Wärmebehandlungs-Kurven im Spannungs-Dehnungs-Diagramm (Klausur!)": "Ordne nach Abkühlung: gehärtet (hart) – vergütet (Mitte) – normalgeglüht (zäh). Klausur-Klassiker!",
+  "Was ist Alterung (Reckalterung) bei Stahl?": "Nach Kaltverformung: Härte/Streckgrenze steigen, Zähigkeit/Bruchdehnung sinken – ungewollt.",
+
+  /* Stahl – Eigenschaften & Prüfung */
+  "E-Modul von Baustahl und Betonstahl": "Zwei nahe Werte um 200.000 N/mm² – Baustahl etwas höher als Betonstahl.",
+  "Was zeigt der Zugversuch (DIN EN 10002)?": "Langsames Ziehen → Streckgrenze, Zugfestigkeit, Bruchdehnung; sogar die Behandlungsart (kalt/warm).",
+  "Was ist die Streckgrenze R_e?": "Beginn des plastischen Fließens – mit oberer und unterer Streckgrenze.",
+  "Was ist die 0,2 %-Dehngrenze (R_p0,2)?": "Ersatz-Streckgrenze, wenn kein klarer Fließbereich da ist (kaltverformt) – bei 0,2 % bleibender Dehnung.",
+  "Was ist die Zugfestigkeit R_m?": "Die maximale Spannung (Höchstkraft), bezogen auf den Anfangsquerschnitt.",
+  "Was beschreibt die Bruchdehnung A?": "Verlängerung nach dem Bruch – ein Maß für die Duktilität (Verformungsfähigkeit).",
+  "Was ist der Kerbschlagbiegeversuch (Charpy, DIN EN 10045)?": "SCHLAGARTIG (Pendel) auf eine gekerbte Probe → Zähigkeit/Sprödbruchneigung, nicht die Festigkeit.",
+  "Was ist die Übergangstemperatur T_Ü?": "Übergang von zähem zu sprödem Bruch – je tiefer, desto größer der sichere Bereich.",
+  "Wann neigt Stahl zum Sprödbruch?": "Denk an Kälte, Grobkorn, hohe Geschwindigkeit und mehrachsige Spannung (Kerben).",
+  "Die beiden Härteprüfverfahren": "Zwei Eindringkörper: Kugel vs. Diamantpyramide (Brinell/Vickers).",
+  "Was ist Dauerschwingfestigkeit (Ermüdung)?": "Wiederholte Last → Schädigung bis Bruch; Kennwert nach Wöhler. Gefahr: Bruch ohne Vorwarnung.",
+  "Dauerstandverhalten von Stahl": "Bis ~400 °C kein Kriechen → Dauerstand ≈ Kurzzeit. Ausnahme: hochbelastete Spannstähle.",
+  "Was ist Schweißeignung? (Stoffeigenschaft)": "Fähigkeit zur untrennbaren Verbindung – Grenze beim C-Gehalt (unter ~0,3 %).",
+  "Schmelzschweißen ↔ Pressschweißen": "Ohne Druck (nur Schmelze) vs. mit Druck – ordne die Verfahren zu.",
+  "Vorteile des Bauens mit Stahl": "Filigran, große Spannweiten, schweißbar, schnell, recyclebar, hoher E-Modul.",
+
+  /* Stahl – Korrosion */
+  "Definition Korrosion": "Reaktion mit der Umgebung durch Oxidation – chemisch oder elektrochemisch.",
+  "Voraussetzungen für den Korrosionsprozess": "Denk an eine Batterie: Elektrolyt, Potentialdifferenz, Sauerstoff, Leitfähigkeit.",
+  "Anodischer ↔ kathodischer Teilprozess": "Wo löst sich das Metall (Me→Me⁺) und wo entstehen OH⁻-Ionen?",
+  "Was ist Rost?": "Das Korrosionsprodukt (rötlich) – porös, schützt NICHT, Volumen nimmt zu → Abplatzen.",
+  "Was ist Lochfraßkorrosion?": "Enge, tiefe Löcher: anodische und kathodische Bereiche klar getrennt (z. B. durch Chlorid).",
+  "Was ist Kontaktkorrosion?": "Zwei Metalle mit Potentialdifferenz – welches korrodiert (edler/unedler)? Und die Regel fürs Befestigungsmittel?",
+  "Was ist Spaltkorrosion?": "In engen Spalten hält sich Feuchte, Sauerstoff fehlt → dort bildet sich die Anode.",
+  "Was ist Spannungsrisskorrosion (SpRK)?": "Zugspannung + Korrosion gleichzeitig, vor allem bei hochfesten Stählen (Spannstahl, Seile).",
+  "Aktiver ↔ passiver Korrosionsschutz": "Am Prozess ansetzen (Gestaltung, Werkstoff, kathodisch) vs. Trennung vom Medium (Beschichtung).",
+  "Maßnahmen des aktiven Korrosionsschutzes (Gestaltung)": "Wasser ableiten, keine Staunässe, Spalten vermeiden, durchgehende Schweißnähte.",
+  "Passiver Korrosionsschutz durch Verzinken": "Zink schützt doppelt: als Barriere UND kathodisch (es opfert sich an Fehlstellen).",
+  "Ab welcher Luftfeuchte tritt nennenswerte Korrosion auf?": "Erst oberhalb einer Schwelle der relativen Luftfeuchte (~75 %) wird es mehr als Flugrost.",
+  "Wetterfeste Baustähle – Prinzip": "Legierungsanteile bilden eine schützende Deckschicht – aber nicht bei ständiger Nässe/Chlorid.",
+  "Nichtrostende Stähle – Prinzip (DIN EN 10088)": "Chrom bildet eine dünne Passivschicht, die sich selbst heilt.",
+
+  /* Stahl – Beton- & Spannstahl */
+  "Kennwerte von Betonstahl B500B (DIN 488-1)": "Die 500 steht für die Streckgrenze; das B für hohe Duktilität.",
+  "Wozu dient Bewehrung im Beton?": "Beton kann Druck, aber kaum Zug – welche Kräfte übernimmt der Stahl?",
+  "Kennzeichnung B500A ↔ B500B über Rippen": "Zähle die Rippenreihen: 3 vs. 2/4 – ordne A und B zu.",
+  "Herstellverfahren von Betonstahl (DIN 488-1)": "Warmgewalzt, aus der Walzhitze wärmebehandelt, kaltgereckt oder kaltverformt.",
+  "R-Matten ↔ Q-Matten (Betonstahlmatten)": "Ein- oder zweiachsige Lastabtragung? R = Hauptrichtung, Q = beide gleich.",
+  "Lagermatten ↔ Listenmatten": "Festes Typenprogramm vs. frei vom Konstrukteur gewählt.",
+  "Anforderungen an Spannstahl": "Hohe Festigkeit/Streckgrenze, wenig Relaxation/Kriechen, gute Dauerschwingfestigkeit.",
+  "Warum ist Spannstahl nicht schweißbar?": "Denk an den C-Gehalt (~0,5 %) – Schweißen bräuchte deutlich weniger.",
+  "Spannverfahren nach Verbundwirkung": "Mit Verbund (sofort im Spannbett / nachträglich) oder ohne Verbund (intern/extern).",
+  "Lieferformen von Spannstahl": "Stäbe, Drähte, Litzen – die bekannteste ist die verseilte Litze (3 oder 7 Drähte).",
+
+  /* Grundlagen */
+  "Die wichtigsten Beanspruchungsarten": "Zug, Druck, Biegung, Scheren, Spalten, Torsion – geh sie im Kopf durch.",
+  "Unterschied Spannung ↔ Festigkeit": "Aktuelle Beanspruchung (F/A) vs. maximale Grenze (maxF/A) bis zum Versagen.",
+  "Federgesetz – Formel": "Kraft proportional zur Längenänderung über eine Konstante (F = c·Δl).",
+  "Elastisch ↔ plastisch": "Reversibel (federt zurück) vs. bleibende Verformung.",
+  "Definition & Formel Dichte (Reindichte)": "Masse/Volumen OHNE Poren.",
+  "Definition & Formel Rohdichte": "Masse/Volumen MIT Poren (Gesamtvolumen).",
+  "Geschlossene ↔ offene Poren": "Von außen unzugänglich vs. zugänglich (Wasser/Gase dringen ein).",
+  "Kraft, Gewicht – Formeln": "F = m·a; Gewicht G = m·g mit g = 9,81 m/s².",
+  "Was ist Kriechen? (allgemein)": "Verformungszunahme unter Dauerlast – gilt für Stahl, Holz und Beton.",
+  "Was ist Dauerstandfestigkeit?": "Größte konstant ertragbare Spannung über die Lebensdauer (Beton ~15 %, Holz ~40–50 %).",
+  "Was ist Verschleiß-/Abnutzwiderstand?": "Wichtig für begangene/befahrene Flächen (Böden, Treppen, Straßen).",
+  "Massebezogene Feuchte – Formel (allg. Baustoffe)": "Wassermasse bezogen auf die TROCKENE Masse.",
+  "Volumenbestimmung eines unregelmäßigen Festkörpers": "Über Wasserverdrängung (Archimedes) oder Tauchwägung.",
+
+  /* Rechnen & Formeln */
+  "Feuchte-Grundformel und die wichtigsten Umstellungen": "u aus feucht/trocken; Trockenmasse = feucht/(1+u). Die Kernformel fast jeder Feuchteaufgabe.",
+  "Transportaufgabe: Wie viele Platten/Hölzer darf das Fahrzeug laden? (Vorgehen)": "Volumen → Masse bei gegebener Feuchte → auf Gleichgewichtsfeuchte umrechnen → durch zulässige Last teilen, abrunden.",
+  "Rohdichte auf eine andere Holzfeuchte umrechnen": "Über die Trockenmasse: erst das Wasser raus, dann mit der neuen Feuchte wieder rein.",
+  "Elastische Verformung Δl unter Last (Hooke)": "Δl = σ/E·l mit σ = F/A; Druck bedeutet Verkürzung.",
+  "Feuchtedehnung (Schwinden/Quellen) berechnen": "ε = α·Δu, Δl = ε·l – nur unterhalb der Fasersättigung.",
+  "Behinderte Dehnung → Zwangsspannung, Querdehnung, Kraft": "Wird die Feuchtedehnung behindert: σ = E·ε_behindert, Kraft = σ·A.",
+  "Kriechverformung und Gesamtverformung": "Kriechen = elastisch·φ; Gesamt = elastisch·(1+φ) + Feuchtedehnung.",
+  "Biegenachweis Balken + Auflager (Aufgabentyp)": "Zwei Nachweise: Biegung (σ=M/W) UND Auflagerpressung quer zur Faser – der kleinere Wert entscheidet.",
+  "Bruchlast einer Stütze / eines Rundholzes": "F = f·A; beim Rundholz ist A = π·d²/4.",
+  "Stahl-Zugversuch: Kennwerte berechnen": "σ=F/S₀, ε=ΔL/L₀; elastisch ε=σ/E, plastisch = gesamt − elastisch.",
+  "Zugkraft aus Verlängerung – plastisch oder nicht? (Stahl)": "σ = E·ε ausrechnen, dann mit der Streckgrenze (Betonstahl 500) vergleichen.",
+  "Porigkeit / Feststoffanteil berechnen": "d = Rohdichte/Reindichte·100; Porenanteil = 100 − d.",
+
+  /* Bauphysik – Wärme Grundlagen */
+  "Warum überhaupt Wärmeschutz?": "Drei Ziele: Energie sparen, Behaglichkeit, Bauschäden (Tauwasser/Schimmel) vermeiden.",
+  "Wärmemenge Q, Wärmestrom Φ, Wärmestromdichte q – Definition & Einheit": "Energie (J) – Energie pro Zeit (W) – pro Zeit und Fläche (W/m²).",
+  "Wodurch entstehen Wärmeströme in einem Bauteil?": "Antrieb ist ein Temperaturunterschied – Wärme fließt von warm nach kalt.",
+  "°C und K – Unterschied": "Gleiche Schrittweite, verschobener Nullpunkt: Differenzen in K, Temperaturen in °C.",
+  "Die 3 Wärmetransportmechanismen": "Einer in Festkörpern, einer über bewegte Luft, einer sogar im Vakuum.",
+  "Wie läuft Wärmeleitung ab?": "Molekülschwingung wird weitergegeben, ohne dass die Moleküle wandern.",
+  "Wovon hängt die Wärmeleitfähigkeit λ eines Baustoffs ab?": "Von Rohdichte, Feuchte, Temperatur – gute Dämmung heißt viel ruhende Luft.",
+  "Wie beeinflusst die Rohdichte die Wärmeleitfähigkeit?": "Mehr Dichte = weniger Luft – dämmt das besser oder schlechter?",
+  "Wie beeinflusst die Feuchte die Wärmeleitfähigkeit?": "Wasser leitet viel besser als Luft – was macht nasse Dämmung?",
+  "Bemessungswert der Wärmeleitfähigkeit ↔ Messwert": "Der Bemessungswert hat einen Sicherheitszuschlag – höher oder niedriger als der Messwert?",
+  "Ist Luft ein guter oder schlechter Wärmeleiter?": "Ruhende Luft dämmt (schlechter Leiter); Metalle leiten dagegen sehr gut.",
+  "Konvektion – frei vs. erzwungen": "Bewegung durch Dichteunterschiede (warm steigt auf) vs. von außen aufgeprägt (Wind/Ventilator).",
+  "Wärmestrahlung – Besonderheit": "Elektromagnetisch, braucht KEIN Medium – funktioniert im Vakuum.",
+  "Stationär ↔ instationär": "Zeitlich konstant (Nachweise) vs. veränderlich (Tag/Nacht, Speicherung).",
+  "Spezifische Wärmespeicherkapazität c": "Wärme, um 1 kg um 1 K zu erwärmen – schwere Bauteile dämpfen Schwankungen.",
+  "Flächenbezogene Masse – schweres/leichtes Bauteil": "Masse pro m²; Grenze ~100 kg/m² – leichte Bauteile brauchen mehr Dämmung.",
+  "Warum beeinflusst die Orientierung den Wärmeschutz?": "Solare Gewinne: Süden viel (Winter), Norden nur Verluste → kleine Nordfenster.",
+  "Maßnahmen für sommerlichen Wärmeschutz": "Außen verschatten, Speichermasse nutzen, Nachtlüftung – Außen- besser als Innendämmung.",
+  "Wärmebrücke – was ist das, welche Arten?": "Örtlich erhöhter Wärmeabfluss – materialbedingt (gut leitendes Bauteil) vs. geometrisch (Ecke).",
+  "Folgen von Wärmebrücken": "Mehr Verluste UND kalte Oberflächen → Tauwasser/Schimmel.",
+
+  /* Bauphysik – Wärme Nachweis */
+  "Wärmedurchlasswiderstand R einer Schicht": "R = Dicke/λ – dicker und dämmender bedeutet größeres R.",
+  "Wärmedurchgangswiderstand R_T": "Alle Schicht-R plus die beiden Übergangswiderstände (innen/außen) addieren.",
+  "Wärmeübergangswiderstände R_si / R_se (Wand)": "Merke für die Wand: innen 0,13, außen 0,04 m²K/W (Konvektion + Strahlung an der Oberfläche).",
+  "Wärmedurchgangskoeffizient U (U-Wert)": "Der Kehrwert von R_T – klein = gut gedämmt.",
+  "Wärmestromdichte q": "q = U·ΔT (bzw. ΔT/R_T) in W/m².",
+  "Temperaturverlauf im Bauteil (Gradient je Schicht)": "Der Temperaturabfall verteilt sich proportional zu den R-Werten – die Dämmschicht trägt am meisten.",
+  "Oberflächentemperatur berechnen (Beispiel)": "θ_si = θ_innen − (R_si/R_T)·ΔT – wichtig für die Schimmelbeurteilung.",
+  "Mindestwärmeschutz DIN 4108-2 – Anforderungswerte": "Nachweis über R; Wand schwer ≥ 1,2, leicht ≥ 1,75 m²K/W.",
+  "R einer ruhenden Luftschicht – warum aus Tabelle?": "In der Luftschicht wirken auch Konvektion/Strahlung – deshalb kein d/λ, sondern ein Normwert.",
+
+  /* Bauphysik – Feuchte */
+  "Hauptaufgaben des Feuchteschutzes": "Tauwasser, Schimmel, Frost, Korrosion vermeiden – und den Wärmeschutz erhalten.",
+  "Wasserdampfkonzentration c (absolute Feuchte)": "Masse Wasserdampf pro m³ Luft (g/m³) – unabhängig von der Temperatur.",
+  "Sättigungskonzentration c_s und ihre Temperaturabhängigkeit": "Das Maximum – warme Luft nimmt viel mehr auf als kalte.",
+  "Relative Luftfeuchte φ – Definition": "Verhältnis IST zu MAXIMAL (c/c_s bzw. p_D/p_sat).",
+  "Kann die relative Feuchte über 100 % steigen?": "Was passiert bei 100 % mit dem überschüssigen Dampf? Daraus folgt die Antwort.",
+  "Wasserdampfpartialdruck p_D ↔ Sättigungsdruck p_sat": "Tatsächlicher Teildruck vs. maximaler Druck bei Sättigung (temperaturabhängig).",
+  "Taupunkt / Taupunkttemperatur": "Temperatur, bei der die Luft gesättigt ist (φ=100 %) – darunter kondensiert es.",
+  "Wie kommt es zu Tauwasserausfall?": "Feuchte Luft trifft eine Oberfläche, die kälter als der Taupunkt ist.",
+  "Ab wann Schimmelgefahr? (DIN 4108-2)": "Nicht erst bei 100 %: schon ab 80 % r.F. an der Oberfläche (≈ 12,6 °C bei 20/50).",
+  "Höheres/niedrigeres Raumklima – Wirkung auf die kritische Oberfläche": "Mehr Raumfeuchte → 80 % schon bei höherer Oberflächentemperatur → mehr Gefahr.",
+  "Luftwechselzahl n": "Wie oft pro Stunde das Raumvolumen ausgetauscht wird (1/h).",
+  "Richtig lüften: Kippen ↔ Stoßlüften": "Dauerkippen kühlt aus und verschwendet Energie; kurzes Stoßlüften tauscht schnell Feuchte.",
+  "Warum unbeheizten Keller im Winter (nicht im Sommer) lüften?": "Warme Sommerluft kondensiert an kalten Kellerwänden – im Winter trocknet kalte Luft.",
+  "Warum beschlägt die Brille beim Betreten eines warmen Raums?": "Kalte Glasfläche unter dem Taupunkt der warmen Raumluft → Kondensat.",
+  "Warum keine Schränke dicht an Außenwände stellen?": "Dahinter kalt + stehende Luft → hohe r.F. → Schimmel. Die Luft muss zirkulieren.",
+
+  /* Bauphysik – Feuchtetransport */
+  "Feuchtetransportmechanismen in porösen Baustoffen": "Dampfförmig (Diffusion), flüssig (Kapillar), dazu Oberflächendiffusion.",
+  "Wasserdampfdiffusion – Mechanismus & Antrieb": "Von hohem zu niedrigem Dampfdruck – im Winter von innen (warm/feucht) nach außen.",
+  "Wasserdampf-Diffusionswiderstandszahl µ": "Wie viel schlechter als Luft der Stoff Dampf durchlässt (Luft µ=1).",
+  "Diffusionsäquivalente Luftschichtdicke s_d": "s_d = µ·d in Metern; klein = diffusionsoffen, groß = dicht.",
+  "Dampfsperre / Dampfbremse": "Hoher Diffusionswiderstand auf der WARMEN Innenseite – begrenzt Dampf in der Konstruktion.",
+  "µ-Werte typischer Stoffe (Größenordnung)": "Luft = 1; dichte Stoffe hoch; Glas/Metall praktisch dampfdicht.",
+  "Kapillarporen ↔ Gelporen ↔ Luftporen": "Wer transportiert flüssig schnell und tief – und wer gar nicht kapillar (zu groß)?",
+  "Hygroskopizität / Adsorption / Sorptionsisotherme": "Feuchte aus der Luft aufnehmen; die Isotherme verknüpft r.F. mit Ausgleichsfeuchte.",
+  "Glaser-Verfahren / Diffusionsdiagramm – Kriterium": "Sättigungs- und Partialdruckkurve auftragen; Tauwasser, wo sie sich berühren – muss wieder austrocknen.",
+  "Innen- vs. Außendämmung (feuchtetechnisch)": "Welche hält die Wand warm und den Taupunkt außen (weniger Tauwasser)?",
+
+  /* Bauphysik – Schall */
+  "Luftschall ↔ Körperschall ↔ Trittschall": "Über Luft, im Bauteil, oder durch Begehen der Decke – ordne zu.",
+  "Wie wird Schall übertragen?": "Als Druckwelle in einem Medium – ohne Medium (Vakuum) kein Schall.",
+  "Frequenz, Wellenlänge, Amplitude": "Tonhöhe, Abstand, Lautstärke – verknüpft über c = f·λ.",
+  "Schallgeschwindigkeit & Rechenbeispiel": "In Luft ~343 m/s; λ = c/f (für 200 Hz ≈ 1,7 m).",
+  "Schall, Infraschall, Ultraschall – Hörbereich": "Hörbar grob 16 Hz bis 20 kHz; darunter Infra-, darüber Ultraschall.",
+  "Schalldruck p und Schalldruckpegel L": "Druckschwankung (Pa) vs. logarithmisches Maß in dB.",
+  "Warum dB(A) – A-Bewertung?": "Das Ohr hört frequenzabhängig – die A-Bewertung passt den Pegel ans Empfinden an.",
+  "Schalldämmung ↔ Schalldämpfung": "Übertragung ins Nachbarzimmer behindern vs. Absorption im Raum (Nachhall).",
+  "Nachhallzeit": "Zeit, bis der Pegel um 60 dB abklingt – über Absorption an die Nutzung anpassen.",
+  "Bewertetes Schalldämm-Maß R_w": "Einzahlangabe der Luftschalldämmung – höher = besser.",
+  "Einschalige Wand: Schalldämmung verbessern": "Bergersches Massegesetz: mehr Masse = mehr Dämmung (schwer bauen).",
+  "Zweischalige Wand: Schalldämmung verbessern": "Feder-Masse: entkoppeln, Abstand vergrößern – und Schallbrücken vermeiden.",
+  "Was ist eine Schallbrücke?": "Eine starre Verbindung, die die Trennung überbrückt und die Dämmung verschlechtert.",
+
+  /* Bauphysik – Brand */
+  "Baustoffklassen nach DIN 4102-1": "A = nichtbrennbar; B1/B2/B3 = schwer/normal/leicht entflammbar.",
+  "In welche Baustoffklasse fällt Holz?": "Brennbar, aber nicht leicht – denk an B2 (bei üblicher Dicke/Rohdichte).",
+  "Feuerwiderstandsklassen F30–F120": "Die Zahl = Minuten, die das Bauteil standhält (F90 = 90 min).",
+  "Bedeutung von F90-A, F60-AB, F30-B": "Zahl = Minuten, Buchstabe = Baustoffe (A nichtbrennbar … B brennbar).",
+  "Brandwand": "Hoher Feuerwiderstand (i. d. R. F90-A) – soll die Brandausbreitung begrenzen, aber nicht unbegrenzt.",
+  "Voraussetzungen für einen Brand (Branddreieck)": "Drei Dinge zugleich: Brennstoff, Sauerstoff, Zündtemperatur.",
+  "Brandverhalten Stahl ↔ Holz": "Stahl nichtbrennbar, verliert aber früh Festigkeit; Holz brennt langsam/berechenbar (Kohleschicht schützt)."
+};
+
 if (typeof window !== "undefined") {
   window.FAECHER = FAECHER;
   window.THEMEN = THEMEN;
@@ -1631,6 +1918,7 @@ if (typeof window !== "undefined") {
   window.FRAGEN = FRAGEN;
   window.THEMA_INFO = THEMA_INFO;
   window.TIPPS = TIPPS;
+  window.KARTEN_TIPP = KARTEN_TIPP;
 }
 
 </script>
@@ -1706,6 +1994,7 @@ function infoBoxHTML(item, includeKontext){
 // Karte: eigener Tipp (h) oder themenbezogener Denk-Anstoß aus TIPPS.
 function cardHint(card){
   return card.h
+      || (typeof KARTEN_TIPP!=="undefined" && KARTEN_TIPP[card.f])
       || (typeof TIPPS!=="undefined" && TIPPS[card.t])
       || "Ruf das Grundprinzip des Themas ab – die ausführliche Erklärung siehst du nach dem Umdrehen.";
 }
