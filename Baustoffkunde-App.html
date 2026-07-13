@@ -300,12 +300,8 @@
         <span class="dot" id="quizDot" style="width:10px;height:10px;border-radius:50%"></span><span id="quizTopic"></span>
       </div>
       <div class="quiz-q" id="quizQ"></div>
-      <div class="quiz-hint">Mehrfachauswahl möglich – wähle <b>alle</b> zutreffenden Antworten.</div>
+      <div class="quiz-hint" id="quizCount"></div>
       <div id="quizOpts"></div>
-      <div id="quizHintWrap" style="margin:4px 0 14px">
-        <button class="hint-btn" id="quizHintBtn">💡 Kleiner Tipp</button>
-        <div class="hint-box hidden" id="quizHint"></div>
-      </div>
       <div id="quizExpl"></div>
       <div class="start-row">
         <button class="btn btn-primary" id="checkBtn">Antwort prüfen</button>
@@ -1603,12 +1599,38 @@ const THEMA_INFO = {
   }
 };
 
+/* ---- TIPPS ----
+   Inhaltlicher Denk-Anstoß je Thema: bringt dich auf die richtige Spur, OHNE die Lösung zu nennen.
+   (Einzelne Karten können per Feld h einen eigenen, spezifischeren Tipp setzen.) */
+const TIPPS = {
+  "holz-aufbau": "Frag dich, welche Funktion die Zelle oder der Stoff im lebenden Baum hat – Wasser transportieren oder Last tragen. Daraus folgt fast alles.",
+  "holz-feuchte": "Ordne den Wert auf der Feuchte-Achse ein: frisch → Fasersättigung → Gleichgewicht → darrtrocken. Und unterscheide: mit Poren (Rohdichte) oder ohne (Reindichte)?",
+  "holz-mechanik": "Zwei Leitfragen helfen fast immer: In welche Richtung wirkt die Last (längs oder quer zur Faser)? Und wie feucht bzw. dicht ist das Holz?",
+  "holz-schutz": "Trenne baulichen Schutz (Feuchte fernhalten) vom chemischen (Mittel). Bei Pilzen frag dich: Welcher Holzbestandteil wird abgebaut – und welche Farbe bleibt zurück?",
+  "holz-sortier": "Denk an das Grundprinzip: Was stört den Faserverlauf oder die Tragfähigkeit? Mehr Störung (Äste, Faserneigung, Risse) bedeutet eine niedrigere Klasse.",
+  "holz-werkstoff": "Achte auf die Orientierung der Schichten: parallel geschichtet oder kreuzweise verleimt? Daraus ergibt sich das Tragverhalten in den Richtungen.",
+  "stahl-herst": "Zwei Stellschrauben steuern fast alles: der Kohlenstoffgehalt und die Abkühlgeschwindigkeit. Überleg, welche hier gemeint ist.",
+  "stahl-waerme": "Die eine Leitfrage: Wie schnell wird abgekühlt? Rasch führt zu hart und spröde, langsam zu zäh. Vergüten kombiniert beide Schritte.",
+  "stahl-eig": "Frag dich, ob langsam gezogen wird (Zugversuch: Festigkeit, Dehnung) oder schlagartig belastet (Kerbschlag: Zähigkeit, Übergangstemperatur).",
+  "stahl-korr": "Zwei Ebenen: Wie entsteht die Korrosion (anodisch/kathodisch, Potentialunterschied)? Und ist der Schutz aktiv (Eingriff in den Prozess) oder passiv (Trennung vom Medium)?",
+  "stahl-beton": "Denk an die Rolle im Beton: Zugkräfte aufnehmen (Betonstahl) oder vorspannen (Spannstahl). Achte auf Kohlenstoffgehalt (Schweißbarkeit) und Streckgrenze.",
+  "grundlagen": "Trenne die Begriffe sauber: aktuelle Beanspruchung oder Grenzwert? Kraft pro Fläche oder Längenänderung? Und gilt der Zusammenhang nur im elastischen Bereich?",
+  "bk-rechnen": "Geh den festen Rechenweg im Kopf durch: Fläche → Spannung → elastische Verformung → Feuchtedehnung → Kriechen. Welcher Schritt ist gefragt und welche Größe fehlt dir noch?",
+  "bp-waerme": "Frag dich zuerst, welcher der drei Transportwege gemeint ist – und wie Rohdichte und Feuchte die Wärmeleitfähigkeit λ verändern.",
+  "bp-waerme-rech": "Denk in der Formelkette: Schichtdicke durch λ ergibt R, plus die Übergänge ergibt R_T, der Kehrwert ergibt U. Was genau ist gesucht?",
+  "bp-feuchte": "Leitgedanke: Kann die Luft bei ihrer Temperatur die Feuchte noch halten? Wird es kälter oder feuchter, nähert man sich dem Tauwasser.",
+  "bp-feuchte-tr": "Behalte zwei Größen im Blick: wie dicht der Stoff gegen Dampf ist (µ) und die gleichwertige Luftschicht s_d = µ·d. Und: Wohin wandert der Dampf?",
+  "bp-schall": "Sortiere zuerst die Schallart (Luft-, Körper- oder Trittschall). Für die Dämmung denk an Masse (einschalig) oder Entkopplung (zweischalig).",
+  "bp-brand": "Trenne zwei Klassensysteme: Wie brennbar ist der Baustoff (A oder B) und wie lange hält das Bauteil stand (F plus Minutenzahl)?"
+};
+
 if (typeof window !== "undefined") {
   window.FAECHER = FAECHER;
   window.THEMEN = THEMEN;
   window.KARTEN = KARTEN;
   window.FRAGEN = FRAGEN;
   window.THEMA_INFO = THEMA_INFO;
+  window.TIPPS = TIPPS;
 }
 
 </script>
@@ -1680,25 +1702,13 @@ function infoBoxHTML(item, includeKontext){
   return h;
 }
 
-// ---- Tipp (kleiner Hinweis ohne Lösung) ----
-// Karte: eigener Tipp (h) oder automatischer Cue aus den Schlüsselbegriffen (Anfangsbuchstaben).
-function autoHintCard(card){
-  const terms=[];
-  [...card.b.matchAll(/<b>(.*?)<\/b>/g)].forEach(m=>{
-    m[1].replace(/<[^>]+>/g,"").split(/,| und | oder | bzw\. |·|&/).forEach(x=>{
-      x=x.trim(); if(x && /[A-Za-zÄÖÜäöü]/.test(x)) terms.push(x);
-    });
-  });
-  const letters=[...new Set(terms.map(t=>{const mm=t.match(/[A-Za-zÄÖÜäöü]/);return mm?mm[0].toUpperCase():"";}).filter(Boolean))].slice(0,8);
-  if(letters.length>=2)
-    return `Denk an die Schlüsselbegriffe – Anfangsbuchstaben: <b>${letters.join(" · ")}</b>`;
-  if(letters.length===1)
-    return `Der zentrale Begriff beginnt mit <b>${letters[0]}</b>. Ruf das Grundprinzip des Themas ab.`;
-  return "Ruf das Grundprinzip des Themas ab – die ausführliche Erklärung siehst du nach dem Umdrehen.";
+// ---- Tipp (inhaltlicher Denk-Anstoß, ohne die Lösung zu nennen) ----
+// Karte: eigener Tipp (h) oder themenbezogener Denk-Anstoß aus TIPPS.
+function cardHint(card){
+  return card.h
+      || (typeof TIPPS!=="undefined" && TIPPS[card.t])
+      || "Ruf das Grundprinzip des Themas ab – die ausführliche Erklärung siehst du nach dem Umdrehen.";
 }
-function cardHint(card){ return card.h || autoHintCard(card); }
-// Frage: eigener Tipp (h) oder Klausur-Hinweis „N von M richtig“ (verrät die Lösung nicht).
-function quizHintText(f){ return f.h || `Klausur-Hinweis: Es sind <b>${f.c.length} von ${f.o.length}</b> Antworten richtig.`; }
 
 let mode = "lernen";
 
@@ -1913,9 +1923,8 @@ function renderQuestion(){
   $("#quizExpl").innerHTML = "";
   $("#checkBtn").classList.remove("hidden");
   $("#nextBtn").classList.add("hidden");
-  $("#quizHintWrap").classList.remove("hidden");
-  $("#quizHint").classList.add("hidden");
-  $("#quizHintBtn").classList.remove("hidden");
+  // Klausur-Hinweis: dauerhaft anzeigen, wie viele Antworten richtig sind (wie in der echten Klausur)
+  $("#quizCount").innerHTML = `<span style="color:var(--accent-2);font-weight:800">🎯 ${f.c.length} von ${f.o.length} Antworten sind richtig.</span> Wähle <b>alle</b> zutreffenden aus.`;
 
   // Optionen zufällig anordnen, damit die richtigen Antworten nicht immer oben stehen
   qOrder = shuffle(f.o.map((_,i)=>i));
@@ -1934,16 +1943,10 @@ function renderQuestion(){
     box.appendChild(el);
   });
 }
-$("#quizHintBtn").onclick = ()=>{
-  $("#quizHint").innerHTML = `<span class="lbl">Tipp</span>${quizHintText(qDeck[qi])}`;
-  $("#quizHint").classList.remove("hidden");
-  $("#quizHintBtn").classList.add("hidden");
-};
 $("#checkBtn").onclick = ()=>{
   if(locked) return;
   const f = qDeck[qi];
   locked=true;
-  $("#quizHintWrap").classList.add("hidden");
   const correct = qCorrect;   // richtige Anzeige-Indizes (nach dem Mischen)
   let allRight = correct.size===selected.size && [...correct].every(c=>selected.has(c));
   $$("#quizOpts .opt").forEach(el=>{
